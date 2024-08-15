@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from PyQt5.QtCore import QTimer
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def graphDay(main):
     bal = []
@@ -31,7 +31,57 @@ def graphDay(main):
     print("Graphing")
             
 def graphWeek(main):
-    pass
+    bal = []
+    time_points = []
+    
+    # Get the current date
+    today = datetime.now()
+
+    # Calculate the start of the week (Sunday)
+    start_of_week = today - timedelta(days=today.weekday() + 1)
+    if today.weekday() == 6:  # If today is Sunday, adjust accordingly
+        start_of_week = today
+
+    # Get the end of the week (Saturday)
+    end_of_week = start_of_week + timedelta(days=6)
+
+    # Generate the list of filenames for the current week
+    week_dates = []
+    current_day = start_of_week
+    while current_day <= end_of_week:
+        week_dates.append(current_day.strftime("%m%d%y"))
+        current_day += timedelta(days=1)
+
+    file_names = os.listdir("Sheets")
+    
+    for date_str in week_dates:
+        fName = f"Sheets/{date_str}.csv"
+        if date_str + ".csv" in file_names:  # Check if the file exists
+            with open(fName, "r") as csvfile:
+                csv_reader = csv.reader(csvfile, delimiter=",")
+                day_bal = []
+                day_time_points = []
+                
+                for row in csv_reader:
+                    day_time_points.append(f"{date_str} {row[0]}")  # Combine date and time
+                    day_bal.append(float(row[1]))  # Convert to float for accurate plotting
+                
+                time_points.extend(day_time_points)
+                bal.extend(day_bal)
+                
+                # Plot each day's data separately to visually separate them
+                main.ax.plot(day_time_points, day_bal, marker='o', linestyle='-', label=date_str)
+    
+    main.ax.clear()
+    main.ax.plot(time_points, bal, color="blue", marker='o', linestyle='-')
+    main.ax.set_xlabel('Time')
+    main.ax.set_ylabel('Balance')
+    main.ax.set_title('Account Balance for the Current Week')
+    main.ax.grid(True)  
+    main.ax.legend(title="Days")  
+    main.ax.tick_params(axis='x', rotation=45)  
+    main.canvas.draw()
+    print("Graphing the current week")
 
 def graphMonth(main):
     pass

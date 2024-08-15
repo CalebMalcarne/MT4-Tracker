@@ -10,8 +10,9 @@ from datetime import datetime
 from graphing import *
 from settings import SettingsWindow
 from edit_config import *
-from reports import sendReport
-from graphAll import AllGraphWindow
+from reports import *
+from graphWindows import *
+
 
 
 
@@ -28,7 +29,7 @@ class AccountBalanceGraph(QMainWindow):
         self.layout = QVBoxLayout(self.central_widget)
         
         self.data = []
-        self.config = getConfigData()
+        self.config = getConfigData() 
         
         self.figure, self.ax = plt.subplots()
         self.canvas = FigureCanvas(self.figure)
@@ -43,9 +44,15 @@ class AccountBalanceGraph(QMainWindow):
         self.display_all_checkbox = QCheckBox("Display All", self)
         self.display_all_checkbox.stateChanged.connect(self.toggle_display_all)
         self.layout.addWidget(self.display_all_checkbox)
+
+        self.display_week_checkbox = QCheckBox("Display Week", self)
+        self.display_week_checkbox.stateChanged.connect(self.toggle_display_week)
+        self.layout.addWidget(self.display_week_checkbox)
+
         
         # Create a placeholder for the All Graph window
         self.all_graph_window = None
+        self.week_graph_window = None
 
     def create_menu(self):
         settings_action = QAction("Settings", self)
@@ -54,24 +61,45 @@ class AccountBalanceGraph(QMainWindow):
         export_action = QAction("Export Graph", self)
         export_action.triggered.connect(self.export_graph)
 
-        report_action = QAction("Send Report", self)
-        report_action.triggered.connect(self.send_report)
+        report_action = QAction("Send Day Report", self)
+        report_action.triggered.connect(self.send_day_report)
+
+        report_weel_action = QAction("Send Week Report", self)
+        report_weel_action.triggered.connect(self.send_week_report)
 
         menubar = self.menuBar()
         file_menu = menubar.addMenu("File")
         file_menu.addAction(settings_action)
         file_menu.addAction(export_action)
         file_menu.addAction(report_action)
+        file_menu.addAction(report_weel_action)
 
     def open_settings(self):
         settings_window = SettingsWindow(self)
         settings_window.exec_()
+
+    def toggle_display_week(self, state):
+        if state == Qt.Checked:
+            self.open_week_graph_window()
+        else:
+            self.close_week_graph_window()
 
     def toggle_display_all(self, state):
         if state == Qt.Checked:
             self.open_all_graph_window()
         else:
             self.close_all_graph_window()
+
+
+    def open_week_graph_window(self):
+        if self.week_graph_window is None:
+            self.week_graph_window = WeekGraphWindow(self)
+            self.week_graph_window.show()
+
+    def close_week_graph_window(self):
+        if self.week_graph_window is not None:
+            self.week_graph_window.close()
+            self.week_graph_window = None
 
     def open_all_graph_window(self):
         if self.all_graph_window is None:
@@ -152,42 +180,57 @@ class AccountBalanceGraph(QMainWindow):
                 self.addVal(balance)
                 print(f"Added {balance} to sheet")
         
-                   
-                
-    def update(self):
-        balance = self.get_account_balance()
-        self.addToSheet(balance)
-        graphDay(self)
-        #graphAll(self)    
 
-    def export_graph(self):
+    def export_graph(self, type):
         date_str = datetime.now().strftime("%m%d%y")
-        filename = f"BalGraph-{date_str}.png"
-        filepath = os.path.join(os.getcwd(), filename)
-        self.figure.savefig(filepath)
-        print(f"Graph saved as {filename}")
+        if type == 0:
+            filename = f"BalGraphDay-{date_str}.png"
+            filepath = (f"img/{filename}")
+            self.figure.savefig(filepath)
+            print(f"Graph saved as {filename}")
+        elif type == 1:
+            filename = f"BalGraphWeek-{date_str}.png"
+            filepath = (f"img/{filename}")
+            if self.week_graph_window is not None:
 
-    def send_report(self):
-        self.export_graph()
-        sendReport()
+                self.week_graph_window.figure.savefig(filepath)
+                print(f"Graph saved as {filename}")
+            else:
+                print("Week graph window not open")
+
+    def send_day_report(self):
+        self.export_graph(0)
+        sendDayReport()
+    
+    def send_week_report(self):
+        self.export_graph(1)
+        sendWeekReport()
 
 
     def get_account_balance(self):
         config = getConfigData()
         path = config["mt4_files_directory"]
         file_name = f"{path}/AccountBalance.txt"
-        #print(f"{path}\AccountBalance.txt")
         if os.path.exists(file_name):
-            with open(file_name, 'r') as file:
-                try:
-                    balance = float(file.readline().strip())
-                    return balance
-                except ValueError:
-                    print("Error reading balance from file")
-                    return None
+            try:
+                with open(file_name, 'r') as file:
+                    try:
+                        balance = float(file.readline().strip())
+                        return balance
+                    except ValueError:
+                        print("Error reading balance from file")
+                        return None
+            except OSError:
+                print ("Error Reading file")
         else:
             return None
-
+        
+    def update(self):
+        balance = self.get_account_balance()
+        if balance is not None:
+            self.addToSheet(balance)
+        graphDay(self)
+        #graphAll(self)    
 def main():
     app = QApplication(sys.argv)
     main_win = AccountBalanceGraph()
