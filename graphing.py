@@ -30,7 +30,11 @@ def graphDay(main):
     main.canvas.draw()
     print("Graphing")
             
-        
+def graphWeek(main):
+    pass
+
+def graphMonth(main):
+    pass
     
 def graphAll(main):
     bal = []
@@ -65,3 +69,5 @@ def graphAll(main):
     main.ax.tick_params(axis='x', rotation=45)  
     main.canvas.draw()
     print("Graphing") 
+
+
