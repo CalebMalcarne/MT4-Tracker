@@ -12,13 +12,14 @@ from settings import SettingsWindow
 from edit_config import *
 from reports import *
 from graphWindows import *
-
-
+from reportSender import DailyTaskExecutor
 
 
 class AccountBalanceGraph(QMainWindow):
     def __init__(self, parent=None):
         super(AccountBalanceGraph, self).__init__(parent)
+
+        self.daily_task_executor = DailyTaskExecutor()
         
         self.setWindowTitle("Account Balance Graph")
         self.setGeometry(100, 100, 800, 600)
@@ -272,6 +273,8 @@ class AccountBalanceGraph(QMainWindow):
             graphAll(self.all_graph_window)
         if self.week_graph_window is not None:
             graphWeek(self.week_graph_window)
+
+        self.daily_task_executor.check_and_run_task(self.send_day_report)
             
 def main():
     app = QApplication(sys.argv)
