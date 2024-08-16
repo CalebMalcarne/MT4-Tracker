@@ -152,9 +152,6 @@ class AccountBalanceGraph(QMainWindow):
     def addToSheet(self, balance):
         bals = []
         new = False
-        
-        if self.dateCheck():
-            self.newSheet()
     
         now = datetime.now()
         date = now.strftime("%m%d%y")
@@ -226,6 +223,8 @@ class AccountBalanceGraph(QMainWindow):
             return None
         
     def update(self):
+        if self.dateCheck():
+            self.newSheet()
         balance = self.get_account_balance()
         if balance is not None:
             self.addToSheet(balance)

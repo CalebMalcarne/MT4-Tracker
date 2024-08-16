@@ -46,6 +46,10 @@ class SettingsWindow(QDialog):
         self.account = QLineEdit()
         self.account.setText(self.config.get("account", ""))
         layout.addWidget(self.account)
+
+        self.emails = QLineEdit()
+        self.emails.setText(self.config.get("emails", ""))
+        layout.addWidget(self.emails)
         
 
         # Save button
@@ -73,6 +77,9 @@ class SettingsWindow(QDialog):
 
         account = self.account.text()
         self.config["account"] = account
+
+        emails = self.emails.text()
+        self.config["emails"] = emails
         
         self.saveConfig()
 
