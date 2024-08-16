@@ -229,7 +229,12 @@ class AccountBalanceGraph(QMainWindow):
         if balance is not None:
             self.addToSheet(balance)
         graphDay(self)
-        #graphAll(self)    
+
+        if self.all_graph_window is not None:
+            graphAll(self.all_graph_window)
+        if self.week_graph_window is not None:
+            graphWeek(self.week_graph_window)
+            
 def main():
     app = QApplication(sys.argv)
     main_win = AccountBalanceGraph()

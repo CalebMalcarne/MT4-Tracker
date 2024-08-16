@@ -28,7 +28,7 @@ def graphDay(main):
     main.ax.set_title('Account Balance Over Time')
     main.ax.grid(True)  # Add a grid for better readability
     main.canvas.draw()
-    print("Graphing")
+    #print("Graphing")
             
 def graphWeek(main):
     bal = []
@@ -81,7 +81,7 @@ def graphWeek(main):
     main.ax.legend(title="Days")  
     main.ax.tick_params(axis='x', rotation=45)  
     main.canvas.draw()
-    print("Graphing the current week")
+    #print("Graphing the current week")
 
 def graphMonth(main):
     pass
