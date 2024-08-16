@@ -81,10 +81,48 @@ def graphWeek(main):
     main.ax.legend(title="Days")  
     main.ax.tick_params(axis='x', rotation=45)  
     main.canvas.draw()
-    #print("Graphing the current week")
 
 def graphMonth(main):
-    pass
+    bal = []
+    time_points = []
+    
+    # Get the current date and month
+    today = datetime.now()
+    current_month = today.strftime("%m")
+    current_year = today.strftime("%y")
+    
+    # Generate the list of filenames for the current month
+    file_names = os.listdir("Sheets")
+    
+    for file in file_names:
+        # Check if the file belongs to the current month and year
+        if file.startswith(current_month) and file.endswith(current_year + ".csv"):
+            date_str = file[:6]  # Extract date from filename (mmddyy)
+            fName = f"Sheets/{file}"
+            with open(fName, "r") as csvfile:
+                csv_reader = csv.reader(csvfile, delimiter=",")
+                day_bal = []
+                day_time_points = []
+                
+                for row in csv_reader:
+                    day_time_points.append(f"{date_str} {row[0]}")  # Combine date and time
+                    day_bal.append(float(row[1]))  # Convert to float for accurate plotting
+                
+                time_points.extend(day_time_points)
+                bal.extend(day_bal)
+                
+                # Plot each day's data separately to visually separate them
+                main.ax.plot(day_time_points, day_bal, marker='o', linestyle='-', label=date_str)
+    
+    main.ax.clear()
+    main.ax.plot(time_points, bal, color="blue", marker='o', linestyle='-')
+    main.ax.set_xlabel('Time')
+    main.ax.set_ylabel('Balance')
+    main.ax.set_title('Account Balance for the Current Month')
+    main.ax.grid(True)  # Add a grid for better readability
+    main.ax.legend(title="Days")  # Add a legend to distinguish between days
+    main.ax.tick_params(axis='x', rotation=45)  # Rotate x-axis labels for better readability
+    main.canvas.draw()
     
 def graphAll(main):
     bal = []
@@ -118,6 +156,6 @@ def graphAll(main):
     main.ax.legend(title="Days")  
     main.ax.tick_params(axis='x', rotation=45)  
     main.canvas.draw()
-    print("Graphing") 
+
 
 

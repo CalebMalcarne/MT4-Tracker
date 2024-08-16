@@ -49,10 +49,15 @@ class AccountBalanceGraph(QMainWindow):
         self.display_week_checkbox.stateChanged.connect(self.toggle_display_week)
         self.layout.addWidget(self.display_week_checkbox)
 
+        self.display_month_checkbox = QCheckBox("Display Month", self)
+        self.display_month_checkbox.stateChanged.connect(self.toggle_display_month)
+        self.layout.addWidget(self.display_month_checkbox)
+
         
         # Create a placeholder for the All Graph window
         self.all_graph_window = None
         self.week_graph_window = None
+        self.month_graph_window = None
 
     def create_menu(self):
         settings_action = QAction("Settings", self)
@@ -64,15 +69,19 @@ class AccountBalanceGraph(QMainWindow):
         report_action = QAction("Send Day Report", self)
         report_action.triggered.connect(self.send_day_report)
 
-        report_weel_action = QAction("Send Week Report", self)
-        report_weel_action.triggered.connect(self.send_week_report)
+        report_week_action = QAction("Send Week Report", self)
+        report_week_action.triggered.connect(self.send_week_report)
+
+        report_month_action = QAction("Send Month Report", self)
+        report_month_action.triggered.connect(self.send_month_report)
 
         menubar = self.menuBar()
         file_menu = menubar.addMenu("File")
         file_menu.addAction(settings_action)
         file_menu.addAction(export_action)
         file_menu.addAction(report_action)
-        file_menu.addAction(report_weel_action)
+        file_menu.addAction(report_week_action)
+        file_menu.addAction(report_month_action)
 
     def open_settings(self):
         settings_window = SettingsWindow(self)
@@ -84,11 +93,18 @@ class AccountBalanceGraph(QMainWindow):
         else:
             self.close_week_graph_window()
 
+    def toggle_display_month(self, state):
+        if state == Qt.Checked:
+            self.open_month_graph_window()
+        else:
+            self.close_month_graph_window()
+
     def toggle_display_all(self, state):
         if state == Qt.Checked:
             self.open_all_graph_window()
         else:
             self.close_all_graph_window()
+
 
 
     def open_week_graph_window(self):
@@ -100,6 +116,16 @@ class AccountBalanceGraph(QMainWindow):
         if self.week_graph_window is not None:
             self.week_graph_window.close()
             self.week_graph_window = None
+
+    def open_month_graph_window(self):
+        if self.month_graph_window is None:
+            self.month_graph_window = MonthGraphWindow(self)
+            self.month_graph_window.show()
+
+    def close_month_graph_window(self):
+        if self.month_graph_window is not None:
+            self.month_graph_window.close()
+            self.month_graph_window = None
 
     def open_all_graph_window(self):
         if self.all_graph_window is None:
@@ -194,6 +220,14 @@ class AccountBalanceGraph(QMainWindow):
                 print(f"Graph saved as {filename}")
             else:
                 print("Week graph window not open")
+        elif type == 2:
+            filename = f"BalGraphMonth-{date_str}.png"
+            filepath = (f"img/{filename}")
+            if self.month_graph_window is not None:
+                self.month_graph_window.figure.savefig(filepath)
+                print(f"Graph saved as {filename}")
+            else:
+                print("Month graph window not open")
 
     def send_day_report(self):
         self.export_graph(0)
@@ -202,6 +236,10 @@ class AccountBalanceGraph(QMainWindow):
     def send_week_report(self):
         self.export_graph(1)
         sendWeekReport()
+    
+    def send_month_report(self):
+        self.export_graph(2)
+        sendMonthReport()
 
 
     def get_account_balance(self):

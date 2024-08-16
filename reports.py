@@ -17,6 +17,10 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 creds = None
 
+config_ = getConfigData()
+
+emails = config_.get("emails", "").split(",")
+
 # The file token.json stores the user's access and refresh tokens, and is
 # created automatically when the authorization flow completes for the first
 # time.
@@ -109,7 +113,9 @@ def sendDayReport():
     '''
 
     #sendEmail(sender_email, to_email, subject, html_msg, attachment_file=image_filename)
-    sendEmail(sender_email, "calebw@malcarne.com", subject, html_msg, attachment_file=image_filename)
+
+    for email in emails:
+        sendEmail(sender_email, email, subject, html_msg, attachment_file=image_filename)
 
 def sendWeekReport():
     config = getConfigData()
@@ -177,6 +183,64 @@ def sendWeekReport():
         <p>Account Growth: {percentChange:.2f}%</p>
     '''
 
-    #sendEmail(sender_email, to_email, subject, html_msg, attachment_file=image_filename)
-    sendEmail(sender_email, "calebw@malcarne.com", subject, html_msg, attachment_file=image_filename)
+    for email in emails:
+        sendEmail(sender_email, email, subject, html_msg, attachment_file=image_filename)
                  
+def sendMonthReport():
+    config = getConfigData()
+    bal = []
+    time_points = []
+    initial = 0
+    final = 0
+    percentChange = 0
+    balChange = 0
+
+    now = datetime.now()
+    date = now.strftime("%m%d%y")
+    fname = f"{date}.csv"
+    image_filename = f"img/BalGraphMonth-{datetime.now().strftime('%m%d%y')}.png" 
+
+    # Get the current date and month
+    today = datetime.now()
+    current_month = today.strftime("%m")
+    current_year = today.strftime("%y")
+    
+    # Generate the list of filenames for the current month
+    file_names = os.listdir("Sheets")
+    
+    for file in file_names:
+        # Check if the file belongs to the current month and year
+        if file.startswith(current_month) and file.endswith(current_year + ".csv"):
+            date_str = file[:6]  # Extract date from filename (mmddyy)
+            fName = f"Sheets/{file}"
+            with open(fName, "r") as csvfile:
+                csv_reader = csv.reader(csvfile, delimiter=",")
+                day_bal = []
+                day_time_points = []
+                
+                for row in csv_reader:
+                    day_time_points.append(f"{date_str} {row[0]}")  # Combine date and time
+                    day_bal.append(float(row[1]))  # Convert to float for accurate plotting
+                
+                time_points.extend(day_time_points)
+                bal.extend(day_bal)    
+
+    initial = float(bal[0])
+    final = float(bal[-1])
+    balChange = final - initial
+    percentChange = (balChange / initial) * 100
+
+    sender_email = "noreply@malcarne.com"
+    to_email = "caleb.malcarne@gmail.com"
+    subject = "Monthly Trading report"
+    html_msg = f'''
+        <p><strong>Report, {datetime.now()}</strong></p>
+        <p>Account: {config.get("account","")}</p>
+        <p>Initial Balance: ${initial}</p>
+        <p>Final Balance:  ${final}</p>
+        <p>Balance Change: ${balChange}</p>
+        <p>Account Growth: {percentChange:.2f}%</p>
+    '''
+
+    for email in emails:
+        sendEmail(sender_email, email, subject, html_msg, attachment_file=image_filename)

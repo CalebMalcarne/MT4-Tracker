@@ -44,3 +44,20 @@ class WeekGraphWindow(QMainWindow):
         self.layout.addWidget(self.canvas)
         
         graphWeek(self)
+
+class MonthGraphWindow(QMainWindow):
+    def __init__(self, parent=None):
+        super(MonthGraphWindow, self).__init__(parent)
+        self.setWindowTitle("Weekly Account Balances Over Time")
+        self.setGeometry(150, 150, 800, 600)
+        
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+        
+        self.layout = QVBoxLayout(self.central_widget)
+        
+        self.figure, self.ax = plt.subplots()
+        self.canvas = FigureCanvas(self.figure)
+        self.layout.addWidget(self.canvas)
+        
+        graphMonth(self)
