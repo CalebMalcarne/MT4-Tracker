@@ -13,6 +13,7 @@ from edit_config import *
 from reports import *
 from graphWindows import *
 from reportSender import DailyTaskExecutor
+from checkFile import makeFiles
 
 
 class AccountBalanceGraph(QMainWindow):
@@ -262,6 +263,8 @@ class AccountBalanceGraph(QMainWindow):
             return None
         
     def update(self):
+        makeFiles()
+
         if self.dateCheck():
             self.newSheet()
         balance = self.get_account_balance()
