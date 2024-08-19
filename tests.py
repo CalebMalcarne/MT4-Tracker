@@ -18,7 +18,7 @@ def is_date_greater(date1_str, date2_str):
 # Example usage
 date1 = "080824"
 date2 = "080924"
+a = 100.4345234256
 
-a = [1,2,3,4]
-print([-1])
+print("{:.2f}".format(a))
 

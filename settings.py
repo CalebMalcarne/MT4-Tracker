@@ -50,6 +50,10 @@ class SettingsWindow(QDialog):
         self.emails = QLineEdit()
         self.emails.setText(self.config.get("emails", ""))
         layout.addWidget(self.emails)
+
+        self.risk = QLineEdit()
+        self.risk.setText(self.config.get("risk", ""))
+        layout.addWidget(self.risk)
         
 
         # Save button
@@ -80,6 +84,9 @@ class SettingsWindow(QDialog):
 
         emails = self.emails.text()
         self.config["emails"] = emails
+
+        risk = self.risk.text()
+        self.config["risk"] = risk
         
         self.saveConfig()
 

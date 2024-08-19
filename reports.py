@@ -98,7 +98,7 @@ def sendDayReport():
     final = float(bal[-1])
     balChange = final - initial
     percentChange = (balChange / initial) * 100
-    #percentChange = 0
+    
     
     sender_email = "noreply@malcarne.com"
     to_email = "caleb.malcarne@gmail.com"
@@ -108,8 +108,9 @@ def sendDayReport():
         <p>Account: {config.get("account","")}</p>
         <p>Initial Balance: ${initial}</p>
         <p>Final Balance:  ${final}</p>
-        <p>Balance Change: ${balChange}</p>
-        <p>Account Growth: {percentChange:.2f}%</p>
+        <p>Net Change: ${balChange}</p>
+        <p>Account Growth: {"{:.2f}".format(percentChange)}%</p>
+        <p>Risk: {config.get("risk","")}<p>
     '''
 
     #sendEmail(sender_email, to_email, subject, html_msg, attachment_file=image_filename)
@@ -170,6 +171,8 @@ def sendWeekReport():
     final = float(bal[-1])
     balChange = final - initial
     percentChange = (balChange / initial) * 100
+    percentChange = "{:.2f}".format(percentChange)
+    balChange = "{:.2f}".format(balChange)
 
     sender_email = "noreply@malcarne.com"
     to_email = "caleb.malcarne@gmail.com"
@@ -179,8 +182,9 @@ def sendWeekReport():
         <p>Account: {config.get("account","")}</p>
         <p>Initial Balance: ${initial}</p>
         <p>Final Balance:  ${final}</p>
-        <p>Balance Change: ${balChange}</p>
-        <p>Account Growth: {percentChange:.2f}%</p>
+        <p>Net Change: ${balChange}</p>
+        <p>Account Growth: {percentChange}%</p>
+        <p>Risk: {config.get("risk","")}<p>
     '''
 
     for email in emails:
@@ -228,7 +232,7 @@ def sendMonthReport():
     initial = float(bal[0])
     final = float(bal[-1])
     balChange = final - initial
-    percentChange = (balChange / initial) * 100
+    percentChange = (balChange / initial) * 100 
 
     sender_email = "noreply@malcarne.com"
     to_email = "caleb.malcarne@gmail.com"
@@ -238,8 +242,9 @@ def sendMonthReport():
         <p>Account: {config.get("account","")}</p>
         <p>Initial Balance: ${initial}</p>
         <p>Final Balance:  ${final}</p>
-        <p>Balance Change: ${balChange}</p>
-        <p>Account Growth: {percentChange:.2f}%</p>
+        <p>Net Change: ${balChange}</p>
+        <p>Account Growth: {"{:.2f}".format(percentChange)}%</p>
+        <p>Risk: {config.get("risk","")}<p>
     '''
 
     for email in emails:

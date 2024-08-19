@@ -108,10 +108,10 @@ class AccountBalanceGraph(QMainWindow):
             self.close_all_graph_window()
 
 
-
     def open_week_graph_window(self):
         if self.week_graph_window is None:
             self.week_graph_window = WeekGraphWindow(self)
+            self.position_window(self.week_graph_window)
             self.week_graph_window.show()
 
     def close_week_graph_window(self):
@@ -122,6 +122,7 @@ class AccountBalanceGraph(QMainWindow):
     def open_month_graph_window(self):
         if self.month_graph_window is None:
             self.month_graph_window = MonthGraphWindow(self)
+            self.position_window(self.month_graph_window)
             self.month_graph_window.show()
 
     def close_month_graph_window(self):
@@ -132,12 +133,21 @@ class AccountBalanceGraph(QMainWindow):
     def open_all_graph_window(self):
         if self.all_graph_window is None:
             self.all_graph_window = AllGraphWindow(self)
+            self.position_window(self.all_graph_window)
             self.all_graph_window.show()
 
     def close_all_graph_window(self):
         if self.all_graph_window is not None:
             self.all_graph_window.close()
             self.all_graph_window = None
+
+    def position_window(self, window):
+        main_window_geometry = self.geometry()
+
+        x = main_window_geometry.x() + main_window_geometry.width()
+        y = main_window_geometry.y()
+
+        window.move(x, y - 30)
 
     def newSheet(self):
         now = datetime.now()

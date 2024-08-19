@@ -7,17 +7,12 @@ class DailyTaskExecutor:
 
     def check_and_run_task(self, task):
         config = getConfigData()
-        report_time_str = config.get("report_time", "00:30")
-        report_time = datetime.strptime(report_time_str, "%H:%M").time()
-        
+        report_time = config.get("report_time", "00:30")
         now = datetime.now()
 
-        # Check if the task has already been executed today
-        if self.last_run_date == now.date():
-            return  # Task has already been executed today
+        check_time = datetime.now().strftime("%H:%M")   
 
-        # Check if the current time matches the scheduled report time exactly
-        if now.time() == report_time:
+        if check_time == report_time and self.last_run_date != now.date():
             task()
             self.last_run_date = now.date()  # Update last run date to today
             print(f"Task executed at {now.strftime('%Y-%m-%d %H:%M:%S')}")

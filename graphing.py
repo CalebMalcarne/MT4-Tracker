@@ -25,7 +25,7 @@ def graphDay(main):
     main.ax.plot(time, bal, color="blue", marker='o', linestyle='-')  # Adding markers for clarity
     main.ax.set_xlabel('Time')
     main.ax.set_ylabel('Balance')
-    main.ax.set_title('Account Balance Over Time')
+    main.ax.set_title('Current Day Account Balance ')
     main.ax.grid(True)  # Add a grid for better readability
     main.canvas.draw()
     #print("Graphing")
@@ -76,7 +76,7 @@ def graphWeek(main):
     main.ax.plot(time_points, bal, color="blue", marker='o', linestyle='-')
     main.ax.set_xlabel('Time')
     main.ax.set_ylabel('Balance')
-    main.ax.set_title('Account Balance for the Current Week')
+    main.ax.set_title('Current Week Account Balance')
     main.ax.grid(True)  
     main.ax.legend(title="Days")  
     main.ax.tick_params(axis='x', rotation=45)  
@@ -118,7 +118,7 @@ def graphMonth(main):
     main.ax.plot(time_points, bal, color="blue", marker='o', linestyle='-')
     main.ax.set_xlabel('Time')
     main.ax.set_ylabel('Balance')
-    main.ax.set_title('Account Balance for the Current Month')
+    main.ax.set_title('Current Month Account Balance')
     main.ax.grid(True)  # Add a grid for better readability
     main.ax.legend(title="Days")  # Add a legend to distinguish between days
     main.ax.tick_params(axis='x', rotation=45)  # Rotate x-axis labels for better readability
