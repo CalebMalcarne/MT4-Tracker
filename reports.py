@@ -98,7 +98,7 @@ def sendDayReport():
     final = float(bal[-1])
     balChange = final - initial
     percentChange = (balChange / initial) * 100
-    
+    balChange = "{:.2f}".format(balChange)
     
     sender_email = "noreply@malcarne.com"
     to_email = "caleb.malcarne@gmail.com"
@@ -233,6 +233,7 @@ def sendMonthReport():
     final = float(bal[-1])
     balChange = final - initial
     percentChange = (balChange / initial) * 100 
+    balChange = "{:.2f}".format(balChange)
 
     sender_email = "noreply@malcarne.com"
     to_email = "caleb.malcarne@gmail.com"
